@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🧩 Activity + 🎵 Music Playlist Pairing</title>
+
+  <!-- aesthetic font -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+   <link rel="stylesheet" href="styles.css"/>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class = "hero">
+     <h1>Activity + Music Playlist Pairing</h1>
+
+     <p>
+        Click for a new activity, then get a matching mini-playlist to go with the vibe.
+     </p>
+
+     <div class="hero-actions">
+        <button id="generateBtn" type="button">✨ New Pairing</button>
+     </div>
+    </header>
+
+    <main>
+        <section class="grid" aria-label="Activity and playlist results">
+
+            <!--Activity Card-->
+            <article class="card" id="activityCard" aria-live="polite">
+                <h2>Your Activity</h2>
+                <div id="activity" class="content">
+                    <p>Select "New Pairing" to start.</p>
+                </div>
+            </article>
+
+            <!--Playlist Card-->
+            <article class="card" id="playlistCard" aria-live="polite">
+                <h2>Your Playlist</h2>
+                <div id="playlist" class="content">
+                    <p>Your playlist will appear here.</p>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+    <footer> 
+        <p>Powered by Bored API + Deezer Search API.</p>
+        <p>Warning: Some pairings might not make the most sense, if so, keep generating pairings!</p>
+        <p>Developed by Harjot Kaur Saini</p>
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
