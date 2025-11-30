@@ -374,7 +374,7 @@ async function loadLastPairing() {
 
 
 // -----------------------------
-// 5) MAIN FLOW
+// 5) MAIN FLOW (with IndexedDB)
 // -----------------------------
 
 async function getPairing() {
@@ -382,7 +382,7 @@ async function getPairing() {
   playlistDiv.innerHTML = "Loading playlist...";
 
   try {
-    //  Fetch activity
+    // 1)  Fetch activity
     const activityRes = await fetch(BORED_URL);
     const activityData = await activityRes.json();
 
@@ -396,20 +396,61 @@ async function getPairing() {
       <span class="badge">New Activity ✨</span>
     `;
 
-    //  Choose vibe from buckets
+    // 2)  Choose vibe from buckets
     const vibe = chooseMusicKeyword(activityText, type);
 
-    //  Get diverse playlist for that vibe
+    // 3)  Get diverse playlist for that vibe
     const { tracks, artistsUsed } = await fetchDeezerPlaylistForVibe(vibe);
 
+    // 4) Render the Playlist
     renderPlaylist(tracks, vibe, artistsUsed);
 
+
+    // 5) SAVE to IndexedDB for offline / refresh use
+   const activityToSave = {
+      text: activityText,
+      type: type,
+      participants: activityData.participants
+   };
+
+   const playlistToSave = {
+    vibe,
+    artistsUsed,
+    tracks
+   };
+
+   await saveLastPairing(activityToSave, playlistToSave);
+
   } catch (err) {
-    activityDiv.innerHTML = "Failed to load activity.";
-    playlistDiv.innerHTML = "Failed to load playlist.";
     console.error(err);
-  }
-}
+
+    //If network/API fails → try to load last saved pairing
+    const cached = await loadLastPairing().catch(() => null);
+
+    if(cached) {
+      const { activityData, playlistData } = cached;
+
+      activityDiv.innerHTML = `
+      
+      <p class="label">Offline / fallback mode: showing last saved pairing.</p>
+      <p><strong>${activityData.text}</strong></p>
+      <p class="label">Type: ${activityData.type}</p>
+      <p class="label"Participants: ${activityData.participants}</p>
+      <span class="badge">Saved Activity ✨</span>
+      `;
+
+      renderPlaylist(
+        playlistData.tracks,
+        playlistData.vibe,
+        playlistData.artistsUsed
+      );
+    } else {
+      activityDiv.innerHTML = "Failed to load activity (no cached data).";
+      playlistDiv.innerHTML = "Failed to load playlist (no cached data).";
+
+     }
+    }
+   }
 
 // Auto-load once on start
 getPairing();
