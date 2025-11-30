@@ -357,6 +357,21 @@ async function saveLastPairing(activityData, playlistData) {
   });
 }
 
+async function loadLastPairing() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+
+    const request = store.get("last");
+    request.onsuccess = () => {
+      resolve(request.result || null);
+    };
+    request.onerror = () => reject(request.error);
+
+  });
+}
+
 
 // -----------------------------
 // 5) MAIN FLOW
