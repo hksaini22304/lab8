@@ -340,6 +340,22 @@ function openDB() {
   });
 }
 
+async function saveLastPairing(activityData, playlistData) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+
+    store.put({
+      id: "last", 
+      activityData, 
+      playlistData
+    });
+
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
 
 
 // -----------------------------
